@@ -4,6 +4,8 @@ package com.hotels.hotels.service;
 import com.hotels.hotels.dao.HotelsRepository;
 import com.hotels.hotels.entity.Hotel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +19,12 @@ public class HotelsServiceImpl implements HotelsService {
 
     @Autowired
     public HotelsServiceImpl(HotelsRepository hotelsRepository) {
-        hotelsRepository = hotelsRepository;
         this.hotelsRepository = hotelsRepository;
     }
 
     @Override
-    public List<Hotel> findAll() {
-        return hotelsRepository.findAll();
+    public Page<Hotel> findAll(Pageable pageable) {
+        return hotelsRepository.findAll(pageable);
     }
 
     @Override
@@ -36,7 +37,6 @@ public class HotelsServiceImpl implements HotelsService {
             hotel = result.get();
         }
         else {
-            // we didn't find the employee
             throw new RuntimeException("Did not find hotel id - " + theId);
         }
 
@@ -52,4 +52,9 @@ public class HotelsServiceImpl implements HotelsService {
     public void deleteById(int id) {
         hotelsRepository.deleteById(id);
     }
+
+    public Page<Hotel> findByNameContaining(String name, Pageable pageable) {
+        return hotelsRepository.findByNameContainingIgnoreCase(name, pageable);
+    }
+
 }
